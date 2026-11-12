@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-registration-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-registration
+  template:
+    metadata:
+      labels:
+        app: gateway-registration
+    spec:
+      containers:
+        - name: api-gateway
+          image: student-api-gateway:1.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3003
+          env:
+            - name: PORT
+              value: "3003"
+            - name: REGISTRATION_SERVICE_URL
+              value: "http://localhost:3001"
+            - name: STUDENT_SERVICE_URL
+              value: "http://student-service:3002"
+        - name: registration-service
+          image: student-registration:1.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3001
+          env:
+            - name: PORT
+              value: "3001"
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: student-management-secrets
+                  key: MONGO_URL
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: student-service
+  template:
+    metadata:
+      labels:
+        app: student-service
+    spec:
+      containers:
+        - name: student-service
+          image: student-service:1.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3002
+          env:
+            - name: PORT
+              value: "3002"
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: student-management-secrets
+                  key: MONGO_URL
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: student-management-secrets
+                  key: JWT_SECRET

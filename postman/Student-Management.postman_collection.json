@@ -1,0 +1,51 @@
+{
+  "info": {
+    "name": "Student Management Microservices",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:3003" },
+    { "key": "studentId", "value": "ST001" }
+  ],
+  "item": [
+    {
+      "name": "Register Student (Gateway)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"Student_id\": \"{{studentId}}\",\n  \"Student_name\": \"John Student\",\n  \"student_mobile\": \"012345678\",\n  \"student_email\": \"john.student@example.com\",\n  \"student_password\": \"password123\"\n}" },
+        "url": "{{baseUrl}}/api/register"
+      }
+    },
+    {
+      "name": "Search by ID (Gateway)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/students/search?id={{studentId}}" }
+    },
+    {
+      "name": "Search by Name (Gateway)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/students/search?name=John" }
+    },
+    {
+      "name": "Login (Gateway)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"student_email\": \"john.student@example.com\",\n  \"student_password\": \"password123\"\n}" },
+        "url": "{{baseUrl}}/api/students/login"
+      }
+    },
+    {
+      "name": "Update Mobile (Gateway)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"student_mobile\": \"098765432\"\n}" },
+        "url": "{{baseUrl}}/api/students/{{studentId}}"
+      }
+    },
+    {
+      "name": "Delete Student (Gateway)",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/students/{{studentId}}" }
+    }
+  ]
+}
