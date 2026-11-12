@@ -10,14 +10,16 @@ const studentUrl = process.env.STUDENT_SERVICE_URL || 'http://localhost:3002';
 
 app.get('/health', (_req, res) => res.json({ service: 'api-gateway', status: 'ok' }));
 
-app.use('/api/register', createProxyMiddleware({
+app.use(createProxyMiddleware({
   target: registrationUrl,
-  changeOrigin: true
+  changeOrigin: true,
+  pathFilter: '/api/register'
 }));
 
-app.use('/api/students', createProxyMiddleware({
+app.use(createProxyMiddleware({
   target: studentUrl,
-  changeOrigin: true
+  changeOrigin: true,
+  pathFilter: '/api/students/**'
 }));
 
 app.use((_req, res) => res.status(404).json({ message: 'Route not found. Use the API gateway routes.' }));
